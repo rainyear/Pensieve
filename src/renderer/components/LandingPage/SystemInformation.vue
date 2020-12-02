@@ -26,7 +26,13 @@
         <div class="name">Platform:</div>
         <div class="value">{{ platform }}</div>
       </div>
+      <div class="item">
+        <div class="name">DB Version:</div>
+        <div class="value">{{ dbversion }}</div>
+      </div>
+
     </div>
+
   </div>
 </template>
 
@@ -37,9 +43,10 @@
         electron: process.versions.electron,
         name: this.$route.name,
         node: process.versions.node,
-        path: this.$route.path,
+        path: this.$route.name,
         platform: require('os').platform(),
-        vue: require('vue/package.json').version
+        vue: require('vue/package.json').version,
+        dbversion: this.$db.get('version').value()
       }
     }
   }
