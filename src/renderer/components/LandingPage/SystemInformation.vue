@@ -1,39 +1,18 @@
 <template>
-  <div>
-    <div class="title">Information</div>
-    <div class="items">
-      <div class="item">
-        <div class="name">Path:</div>
-        <div class="value">{{ path }}</div>
+    <div class="row">
+        <div class="col s12 m6">
+          <div class="card blue-grey darken-1">
+            <div class="card-content white-text">
+              <span class="card-title">卡片标题</span>
+              <p>我是一个很简单的卡片。我很擅长于包含少量的信息。我很方便，因为我只需要一个小标记就可以有效地使用。</p>
+            </div>
+            <div class="card-action">
+              <a href="#">这是一个链接</a>
+              <a href="#">这是一个链接</a>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="item">
-        <div class="name">Route Name:</div>
-        <div class="value">{{ name }}</div>
-      </div>
-      <div class="item">
-        <div class="name">Vue.js:</div>
-        <div class="value">{{ vue }}</div>
-      </div>
-      <div class="item">
-        <div class="name">Electron:</div>
-        <div class="value">{{ electron }}</div>
-      </div>
-      <div class="item">
-        <div class="name">Node:</div>
-        <div class="value">{{ node }}</div>
-      </div>
-      <div class="item">
-        <div class="name">Platform:</div>
-        <div class="value">{{ platform }}</div>
-      </div>
-      <div class="item">
-        <div class="name">DB Version:</div>
-        <div class="value">{{ dbversion }}</div>
-      </div>
-
-    </div>
-
-  </div>
 </template>
 
 <script>
@@ -51,30 +30,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .title {
-    color: #888;
-    font-size: 18px;
-    font-weight: initial;
-    letter-spacing: .25px;
-    margin-top: 10px;
-  }
-
-  .items { margin-top: 8px; }
-
-  .item {
-    display: flex;
-    margin-bottom: 6px;
-  }
-
-  .item .name {
-    color: #6a6a6a;
-    margin-right: 6px;
-  }
-
-  .item .value {
-    color: #35495e;
-    font-weight: bold;
-  }
-</style>
