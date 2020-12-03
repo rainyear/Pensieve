@@ -1,40 +1,30 @@
 <template>
-  <div class="row">
-    <div class="col s3 side-nav">
-      <!-- Side Nav -->
-      <div class="valign-wrapper">
-        <h5 class="valign">这个应该垂直居中对齐</h5>
-      </div>
-    </div>
-
-    <div class="col s9 main-window">
-      <!-- Main window  -->
-      <import-library v-if="is_empty" v-on:imported="is_empty = false">
-      </import-library>
-      <a
-        v-if="!is_empty"
-        @click="clear_library"
-        class="waves-effect waves-light btn red"
-        >清空图库</a
-      >
-    </div>
-  </div>
+  <el-container>
+    <el-header>Header</el-header>
+    <el-container>
+      <el-aside width="200px">Aside</el-aside>
+      <el-container>
+        <el-main>
+          <import-library> </import-library>
+        </el-main>
+        <el-footer>
+          <status-bar></status-bar>
+        </el-footer>
+      </el-container>
+    </el-container>
+  </el-container>
 </template>
 <script>
 import ImportLibrary from './LandingPage/ImportLibrary'
+import StatusBar from './LandingPage/StatusBar.vue'
 export default {
   name: 'landing-page',
-  components: { ImportLibrary },
+  components: { ImportLibrary, StatusBar },
   data() {
     return {
-      is_empty: !this.$db.read().has('meta.is_empty').value()
     }
   },
   methods: {
-    clear_library: function () {
-      this.$db.unset('meta.is_empty').write()
-      this.is_empty = true
-    }
   }
 }
 </script>
@@ -43,5 +33,14 @@ export default {
 .row > .side-nav {
   height: 100%;
   background: #888;
+}
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
 }
 </style>

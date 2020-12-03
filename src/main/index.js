@@ -1,6 +1,7 @@
 'use strict'
 
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+const klaw = require('klaw')
 
 /**
  * Set `__static` path to static files in production
@@ -44,4 +45,20 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow()
   }
+})
+
+ipcMain.on('selectFolder', (event, args) => {
+  dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory']
+  }, results => {
+    const items = [] // files, directories, symlinks, etc
+    results.forEach(path => {
+      console.log(path)
+      klaw(path)
+        .on('data', item => items.push(item.path))
+        .on('end', () => console.dir(items)) // => [ ... array of files]
+    })
+
+    console.log(items)
+  })
 })
