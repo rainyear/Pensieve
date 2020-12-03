@@ -11,7 +11,10 @@
       <!-- Main window  -->
       <import-library v-if="is_empty" v-on:imported="is_empty = false">
       </import-library>
-      <a @click="clear_library" class="waves-effect waves-light btn red"
+      <a
+        v-if="!is_empty"
+        @click="clear_library"
+        class="waves-effect waves-light btn red"
         >清空图库</a
       >
     </div>
@@ -39,6 +42,6 @@ export default {
 <style scoped>
 .row > .side-nav {
   height: 100%;
-  background: #333;
+  background: #888;
 }
 </style>
