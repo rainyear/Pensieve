@@ -7,10 +7,6 @@
 <script>
 // import M from 'materialize-css'
 export default {
-  name: 'pensieve',
-  mounted() {
-    // M.AutoInit()
-  }
-
+  name: 'pensieve'
 }
 </script>

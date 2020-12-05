@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container :style="style">
     <el-header>Header</el-header>
     <el-container>
       <el-aside width="200px">
@@ -25,22 +25,21 @@ import StatusBar from './LandingPage/StatusBar.vue'
 
 export default {
   name: 'landing-page',
-  components: { ImportLibrary, StatusBar, SideNavColumn, ImageWindow }
+  components: { ImportLibrary, StatusBar, SideNavColumn, ImageWindow },
+  data() {
+    return {
+      winHeight: window.innerHeight
+    }
+  },
+  computed: {
+    style() {
+      return `height: ${this.winHeight}px`
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', () => {
+      this.winHeight = window.innerHeight
+    })
+  }
 }
 </script>
-
-<style scoped>
-.row > .side-nav {
-  height: 100%;
-  background: #888;
-}
-body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-}
-
-main {
-  flex: 1 0 auto;
-}
-</style>
