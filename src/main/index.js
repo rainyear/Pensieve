@@ -2,6 +2,8 @@
 
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 const klaw = require('klaw')
+const Path = require('path')
+// const Jimp = require('jimp')
 
 /**
  * Set `__static` path to static files in production
@@ -23,7 +25,10 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     height: 563,
     useContentSize: true,
-    width: 1000
+    width: 1000,
+    webPreferences: {
+      webSecurity: false
+    }
   })
 
   mainWindow.loadURL(winURL)
@@ -47,18 +52,58 @@ app.on('activate', () => {
   }
 })
 
+function buildPathTree(paths) {
+  const _dt = (p) => {
+    return {
+      'label': Path.basename(p.path),
+      'children': [],
+      'stats': p,
+      'path': p.path
+    }
+  }
+  const _findChildren = (DT, paths) => {
+    paths.forEach(path => {
+      if (Path.dirname(path.path) === DT.path) {
+        let child = _dt(path)
+        DT.children.push(child)
+        _findChildren(child, paths)
+      }
+    })
+  }
+  let DT = _dt(paths[0])
+  _findChildren(DT, paths)
+  return DT
+}
+// ipc
 ipcMain.on('selectFolder', (event, args) => {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory']
   }, results => {
     const items = [] // files, directories, symlinks, etc
-    results.forEach(path => {
-      console.log(path)
-      klaw(path)
-        .on('data', item => items.push(item.path))
-        .on('end', () => console.dir(items)) // => [ ... array of files]
-    })
-
-    console.log(items)
+    const paths = []
+    if (results) {
+      klaw(results[0])
+        .on('data', item => {
+          if (item.stats.isDirectory()) {
+            paths.push(item)
+          } else {
+            let ext = Path.extname(item.path).toLowerCase()
+            if (ext === '.jpg' || ext === '.png') {
+              items.push(item)
+            }
+          }
+        })
+        .on('error', (error, item) => {
+          console.error(error.message)
+          console.error(item.path)
+        })
+        .on('end', () => {
+          const DT = buildPathTree(paths)
+          event.sender.send('folderSelected', [DT, items])
+          items.forEach(item => {
+            console.log(item)
+          })
+        }) // => [ ... array of files]
+    }
   })
 })

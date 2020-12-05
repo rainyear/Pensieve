@@ -14,6 +14,12 @@ Vue.config.productionTip = false
 Vue.prototype.$db = db
 Vue.use(ElementUI)
 
+// init store from local db
+const _ftree = db.read().get('FTREE').value()
+const _images = db.read().get('IMAGES').value()
+store.commit('UPDATE_FTREE', _ftree)
+store.commit('UPDATE_IMAGES', _images)
+
 /* eslint-disable no-new */
 new Vue({
   components: { App },

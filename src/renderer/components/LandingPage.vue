@@ -2,9 +2,12 @@
   <el-container>
     <el-header>Header</el-header>
     <el-container>
-      <el-aside width="200px">Aside</el-aside>
+      <el-aside width="200px">
+        <side-nav-column></side-nav-column>
+      </el-aside>
       <el-container>
         <el-main>
+          <image-window></image-window>
           <import-library> </import-library>
         </el-main>
         <el-footer>
@@ -15,17 +18,14 @@
   </el-container>
 </template>
 <script>
+import ImageWindow from './LandingPage/ImageWindow.vue'
 import ImportLibrary from './LandingPage/ImportLibrary'
+import SideNavColumn from './LandingPage/SideNavColumn.vue'
 import StatusBar from './LandingPage/StatusBar.vue'
+
 export default {
   name: 'landing-page',
-  components: { ImportLibrary, StatusBar },
-  data() {
-    return {
-    }
-  },
-  methods: {
-  }
+  components: { ImportLibrary, StatusBar, SideNavColumn, ImageWindow }
 }
 </script>
 

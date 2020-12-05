@@ -7,6 +7,7 @@ const APP = process.type === 'renderer' ? remote.app : app
 
 const STORE_PATH = APP.getPath('userData')
 const adapter = new FileSync(path.join(STORE_PATH, '/db.json'))
+console.log(`DB_PATH: ${STORE_PATH}`)
 const db = Datastore(adapter)
 
 if (!db.has('version').value()) {

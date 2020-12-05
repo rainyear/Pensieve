@@ -3,6 +3,7 @@
     <el-button
       v-if="is_empty"
       type="primary"
+      :disabled="importing"
       @click="import_library"
       class="waves-effect waves-light btn"
       >打开目录</el-button
@@ -14,28 +15,40 @@
 import {
   ipcRenderer
 } from 'electron'
-const META_IS_EMPTY_FLAG = 'meta.is_empty'
+
 export default {
   data() {
     return {
-      is_empty: this.$db.get(META_IS_EMPTY_FLAG).value() !== undefined
+      importing: false
+    }
+  },
+  computed: {
+    is_empty() {
+      return this.$store.state.FileStatus.fTree.length === 0
     }
   },
   methods: {
     import_library: function (event) {
-      /*
-      this.$db.set(META_IS_EMPTY_FLAG, false).write()
-      setTimeout(() => {
-        this.is_empty = false
-        this.$emit('imported')
-      }, 1000)
-      */
+      this.importing = true
       ipcRenderer.send('selectFolder', 'ok')
     },
     clear_library: function (event) {
-      this.$db.unset(META_IS_EMPTY_FLAG).write()
-      this.is_empty = true
+      this.$db.unset('FTREE').write()
+      this.$db.unset('IMAGES').write()
+      this.$store.commit('CLEAR')
     }
+  },
+  mounted() {
+    ipcRenderer.on('folderSelected', (event, arg) => {
+      const DT = [arg[0]]
+      const Images = arg[1]
+      this.$db.set('FTREE', DT).write()
+      this.$db.set('IMAGES', Images).write()
+
+      this.$store.commit('UPDATE_FTREE', DT)
+      this.$store.commit('UPDATE_IMAGES', Images)
+      this.importing = false
+    })
   }
 }
 </script>
