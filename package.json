@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "author": "Rainyear",
   "description": "Manage your photos/images just like using the magic Pensieve!",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
     "build": "node .electron-vue/build.js",
@@ -20,13 +20,15 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "electron-rebuild": "electron-rebuild -t dev -w opencv4nodejs"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.14.1",
     "exif": "^0.6.0",
     "fast-glob": "^3.2.4",
+    "image-js": "^0.31.1",
     "image-size": "^0.9.3",
     "jimp": "^0.16.1",
     "klaw": "^3.0.0",
@@ -35,11 +37,18 @@
     "materialize-css": "^1.0.0",
     "merge2": "^1.4.1",
     "node-gyp": "^6.1.0",
+    "opencv4nodejs": "^5.6.0",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.0.1",
     "vuex": "^3.6.0",
     "vuex-electron": "^1.0.0"
+  },
+  "opencv4nodejs": {
+    "disableAutoBuild": 1,
+    "opencvIncludeDir": "C:\\tools\\opencv\\build\\include",
+    "opencvLibDir": "C:\\tools\\opencv\\build\\x64\\vc14\\lib",
+    "opencvBinDir": "C:\\tools\\opencv\\build\\x64\\vc14\\bin"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.12.1",

@@ -2,17 +2,19 @@
 
 import { app, BrowserWindow, ipcMain, dialog, remote } from 'electron'
 const klaw = require('klaw')
-const Path = require('path')
-// const Jimp = require('jimp')
 const fs = require('fs')
+const Path = require('path')
+const CV = require('opencv4nodejs')
+// const Jimp = require('jimp')
+// const ImageJS = require('image-js')
 // const ExifImage = require('exif').ExifImage
 const SizeOfImg = require('image-size')
-const Sharp = require('sharp')
 const APP = process.type === 'renderer' ? remote.app : app
 const THUMB_PATH = Path.join(APP.getPath('userData'), 'thumbs')
 if (!fs.existsSync(THUMB_PATH)) {
   fs.mkdirSync(THUMB_PATH)
 }
+console.log('OpenCV Version: ', CV.version)
 
 /**
  * Set `__static` path to static files in production
@@ -91,19 +93,31 @@ function buildPathTree(paths) {
 function processImage(path, cbk) {
   let dim = SizeOfImg(path)
   const name = Path.basename(path)
-
+  // Tring OpenCV
+  // TODO: Unicode Path error -> read from buffer
+  const data = fs.readFileSync(path)
+  const img = CV.imdecode(data, CV.IMREAD_UNCHANGED)
+  console.log(`Image Size: ${img.rows} x ${img.cols}`)
+  // Tring Image-js
+  // ImageJS.load(path).then(img => {
+  // console.log(img.height)
+  // })
   /*
+  // Tring JIMP
   Jimp.read(path).then(image => {
-    image.resize(200, 200).quality(60).writeAsync(Path.join(THUMB_PATH, name))
+    image.resize(200, 200).quality(60).write(Path.join(THUMB_PATH, name))
   }).catch(err => {
     console.log(`Jimp Err: ${err}`)
   })
   */
+  /*
+  // Tring Sharp
   Sharp(path).resize({height: 200}).toFile(Path.join(THUMB_PATH, name), err => {
     if (err) {
       console.log(err)
     }
   })
+  */
   cbk({
     name: name,
     width: dim.width,
