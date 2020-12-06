@@ -4,7 +4,7 @@
       <el-card :body-style="{ padding: '0px', margin: '0px' }" shadow="hover">
         <el-image
           style="height: 200px"
-          :src="image.path"
+          :src="macOS(image.path)"
           fit="scale-down"
         ></el-image>
         <div style="padding: 4px">
@@ -28,6 +28,9 @@ export default {
   methods: {
     shortName(name) {
       return name.length > 20 ? name.substr(0, 17) + '...' : name
+    },
+    macOS(src) {
+      return `file:${src}`
     }
   }
 }

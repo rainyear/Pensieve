@@ -33,6 +33,7 @@ const mutations = {
   CLEAR (state) {
     state.fTree = []
     state.images = []
+    state.currentImages = []
     state.importing = false
   }
 }

@@ -51,6 +51,7 @@ export default {
 
       this.$store.commit('UPDATE_FTREE', DT)
       this.$store.commit('UPDATE_IMAGES', Images)
+      this.$store.commit('SELECT_FOLDER', arg[0].path)
     })
   }
 }
