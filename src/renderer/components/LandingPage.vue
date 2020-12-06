@@ -1,6 +1,6 @@
 <template>
   <el-container :style="style">
-    <el-header>Header</el-header>
+    <el-header> 选择图片 </el-header>
     <el-container>
       <el-aside width="200px">
         <side-nav-column></side-nav-column>
@@ -43,3 +43,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
+</style>

@@ -1,9 +1,18 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, BrowserWindow, ipcMain, dialog, remote } from 'electron'
 const klaw = require('klaw')
 const Path = require('path')
 // const Jimp = require('jimp')
+const fs = require('fs')
+// const ExifImage = require('exif').ExifImage
+const SizeOfImg = require('image-size')
+const Sharp = require('sharp')
+const APP = process.type === 'renderer' ? remote.app : app
+const THUMB_PATH = Path.join(APP.getPath('userData'), 'thumbs')
+if (!fs.existsSync(THUMB_PATH)) {
+  fs.mkdirSync(THUMB_PATH)
+}
 
 /**
  * Set `__static` path to static files in production
@@ -28,6 +37,7 @@ function createWindow () {
     useContentSize: true,
     width: 1000,
     minWidth: 800,
+    autoHideMenuBar: true,
     webPreferences: {
       webSecurity: false
     }
@@ -54,6 +64,7 @@ app.on('activate', () => {
   }
 })
 
+// uitls
 function buildPathTree(paths) {
   const _dt = (p) => {
     return {
@@ -76,7 +87,34 @@ function buildPathTree(paths) {
   _findChildren(DT, paths)
   return DT
 }
+
+function processImage(path, cbk) {
+  let dim = SizeOfImg(path)
+  const name = Path.basename(path)
+
+  /*
+  Jimp.read(path).then(image => {
+    image.resize(200, 200).quality(60).writeAsync(Path.join(THUMB_PATH, name))
+  }).catch(err => {
+    console.log(`Jimp Err: ${err}`)
+  })
+  */
+  Sharp(path).resize({height: 200}).toFile(Path.join(THUMB_PATH, name), err => {
+    if (err) {
+      console.log(err)
+    }
+  })
+  cbk({
+    name: name,
+    width: dim.width,
+    height: dim.height
+  })
+}
 // ipc
+ipcMain.on('clearFolder', (event, args) => {
+  // TODO: clear the thumb dir
+  console.log('Clear Folder')
+})
 ipcMain.on('selectFolder', (event, args) => {
   dialog.showOpenDialog(mainWindow, {
     properties: ['openDirectory']
@@ -90,7 +128,7 @@ ipcMain.on('selectFolder', (event, args) => {
             paths.push(item)
           } else {
             let ext = Path.extname(item.path).toLowerCase()
-            if (ext === '.jpg' || ext === '.png') {
+            if (ext === '.jpg' || ext === '.png' || ext === 'jpeg') {
               items.push(item)
             }
           }
@@ -101,10 +139,16 @@ ipcMain.on('selectFolder', (event, args) => {
         })
         .on('end', () => {
           const DT = buildPathTree(paths)
-          event.sender.send('folderSelected', [DT, items])
-          items.forEach(item => {
-            console.log(item)
+
+          items.forEach((item, idx) => {
+            processImage(item.path, info => {
+              item.info = info
+              event.sender.send('imageProcess', (idx + 1) / items.length)
+            })
           })
+
+          console.log('folderSelected')
+          event.sender.send('folderSelected', [DT, items])
         }) // => [ ... array of files]
     }
   })

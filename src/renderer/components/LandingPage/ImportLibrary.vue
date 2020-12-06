@@ -3,7 +3,7 @@
     <el-button
       v-if="is_empty"
       type="primary"
-      :disabled="importing"
+      :disabled="is_importing"
       @click="import_library"
       class="waves-effect waves-light btn"
       >打开目录</el-button
@@ -19,20 +19,24 @@ import {
 export default {
   data() {
     return {
-      importing: false
+
     }
   },
   computed: {
     is_empty() {
       return this.$store.state.FileStatus.fTree.length === 0
+    },
+    is_importing() {
+      return this.$store.state.FileStatus.importing
     }
   },
   methods: {
     import_library: function (event) {
-      this.importing = true
       ipcRenderer.send('selectFolder', 'ok')
+      this.$store.commit('UPDATE_IMPORTING', true)
     },
     clear_library: function (event) {
+      ipcRenderer.send('clearFolder', 'clear')
       this.$db.unset('FTREE').write()
       this.$db.unset('IMAGES').write()
       this.$store.commit('CLEAR')
@@ -47,7 +51,6 @@ export default {
 
       this.$store.commit('UPDATE_FTREE', DT)
       this.$store.commit('UPDATE_IMAGES', Images)
-      this.importing = false
     })
   }
 }
