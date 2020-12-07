@@ -2,7 +2,7 @@
 
 import { app, BrowserWindow, ipcMain, dialog } from 'electron'
 import { processImage } from '../utils/imageUtils'
-import { buildPathTree } from '../utils/pathUtils'
+import { buildPathTree, isHiddenFolder } from '../utils/pathUtils'
 const Klaw = require('klaw')
 const Path = require('path')
 
@@ -71,7 +71,7 @@ ipcMain.on('selectFolder', (event, args) => {
       Klaw(results[0])
         .on('data', item => {
           if (item.stats.isDirectory()) {
-            paths.push(item)
+            if (!isHiddenFolder(item.path)) paths.push(item)
           } else {
             let ext = Path.extname(item.path).toLowerCase()
             if (ext === '.jpg' || ext === '.png' || ext === 'jpeg') {

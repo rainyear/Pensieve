@@ -22,7 +22,9 @@ function buildPathTree(paths) {
   _findChildren(DT, paths)
   return DT
 }
+const isHiddenFolder = path => Path.basename(path).startsWith('.')
 
 export {
-  buildPathTree
+  buildPathTree,
+  isHiddenFolder
 }
