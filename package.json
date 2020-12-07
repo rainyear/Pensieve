@@ -28,9 +28,6 @@
     "element-ui": "^2.14.1",
     "exif": "^0.6.0",
     "fast-glob": "^3.2.4",
-    "image-js": "^0.31.1",
-    "image-size": "^0.9.3",
-    "jimp": "^0.16.1",
     "klaw": "^3.0.0",
     "lowdb": "^1.0.0",
     "material-design-icons": "^3.0.1",
@@ -44,7 +41,13 @@
     "vuex": "^3.6.0",
     "vuex-electron": "^1.0.0"
   },
-  "opencv4nodejs": {
+  "opencv4nodejs-only4darwin": {
+    "disableAutoBuild": 1,
+    "opencvIncludeDir": "/usr/local/include/opnecv4",
+    "opencvLibDir": "/usr/local/lib",
+    "opencvBinDir": "/usr/local/bin"
+  },
+  "opencv4nodejs-only4win": {
     "disableAutoBuild": 1,
     "opencvIncludeDir": "C:\\tools\\opencv\\build\\include",
     "opencvLibDir": "C:\\tools\\opencv\\build\\x64\\vc14\\lib",
