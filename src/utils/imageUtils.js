@@ -1,5 +1,7 @@
 
 import { remote, app } from 'electron'
+
+const crypto = require('crypto')
 const fs = require('fs')
 const Path = require('path')
 const CV = require('opencv4nodejs')
@@ -13,15 +15,18 @@ const THUMB_HEIGHT = 200
 
 function processImage(path, cbk) {
   const name = Path.basename(path)
-  // Tring OpenCV
-  // TODO: Unicode Path error -> read from buffer
+  const extn = Path.extname(path)
   const data = fs.readFileSync(path)
   const img = CV.imdecode(data, CV.IMREAD_UNCHANGED)
 
+  // Resize - create thumbnails
   const scale = THUMB_HEIGHT / img.rows
   const thumb = img.rescale(scale)
 
-  const saveTo = Path.join(THUMB_PATH, name)
+  // Hash filename - prevent same image name from different folder
+  const saveToName = crypto.createHmac('sha256', 'Pensieve').update(path).digest('hex')
+  const saveTo = Path.join(THUMB_PATH, `${saveToName}.${extn}`)
+
   CV.imwrite(saveTo, thumb)
   cbk({
     name: name,
