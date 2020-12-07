@@ -1,20 +1,10 @@
 'use strict'
 
-import { app, BrowserWindow, ipcMain, dialog, remote } from 'electron'
-const klaw = require('klaw')
-const fs = require('fs')
+import { app, BrowserWindow, ipcMain, dialog } from 'electron'
+import { processImage } from '../utils/imageUtils'
+import { buildPathTree } from '../utils/pathUtils'
+const Klaw = require('klaw')
 const Path = require('path')
-const CV = require('opencv4nodejs')
-// const Jimp = require('jimp')
-// const ImageJS = require('image-js')
-// const ExifImage = require('exif').ExifImage
-const SizeOfImg = require('image-size')
-const APP = process.type === 'renderer' ? remote.app : app
-const THUMB_PATH = Path.join(APP.getPath('userData'), 'thumbs')
-if (!fs.existsSync(THUMB_PATH)) {
-  fs.mkdirSync(THUMB_PATH)
-}
-console.log('OpenCV Version: ', CV.version)
 
 /**
  * Set `__static` path to static files in production
@@ -66,64 +56,6 @@ app.on('activate', () => {
   }
 })
 
-// uitls
-function buildPathTree(paths) {
-  const _dt = (p) => {
-    return {
-      'label': Path.basename(p.path),
-      'children': [],
-      'stats': p,
-      'path': p.path
-    }
-  }
-  const _findChildren = (DT, paths) => {
-    paths.forEach(path => {
-      if (Path.dirname(path.path) === DT.path) {
-        let child = _dt(path)
-        DT.children.push(child)
-        _findChildren(child, paths)
-      }
-    })
-  }
-  let DT = _dt(paths[0])
-  _findChildren(DT, paths)
-  return DT
-}
-
-function processImage(path, cbk) {
-  let dim = SizeOfImg(path)
-  const name = Path.basename(path)
-  // Tring OpenCV
-  // TODO: Unicode Path error -> read from buffer
-  const data = fs.readFileSync(path)
-  const img = CV.imdecode(data, CV.IMREAD_UNCHANGED)
-  console.log(`Image Size: ${img.rows} x ${img.cols}`)
-  // Tring Image-js
-  // ImageJS.load(path).then(img => {
-  // console.log(img.height)
-  // })
-  /*
-  // Tring JIMP
-  Jimp.read(path).then(image => {
-    image.resize(200, 200).quality(60).write(Path.join(THUMB_PATH, name))
-  }).catch(err => {
-    console.log(`Jimp Err: ${err}`)
-  })
-  */
-  /*
-  // Tring Sharp
-  Sharp(path).resize({height: 200}).toFile(Path.join(THUMB_PATH, name), err => {
-    if (err) {
-      console.log(err)
-    }
-  })
-  */
-  cbk({
-    name: name,
-    width: dim.width,
-    height: dim.height
-  })
-}
 // ipc
 ipcMain.on('clearFolder', (event, args) => {
   // TODO: clear the thumb dir
@@ -136,7 +68,7 @@ ipcMain.on('selectFolder', (event, args) => {
     const items = [] // files, directories, symlinks, etc
     const paths = []
     if (results) {
-      klaw(results[0])
+      Klaw(results[0])
         .on('data', item => {
           if (item.stats.isDirectory()) {
             paths.push(item)

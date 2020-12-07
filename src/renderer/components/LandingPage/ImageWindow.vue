@@ -4,7 +4,7 @@
       <el-card :body-style="{ padding: '0px', margin: '0px' }" shadow="hover">
         <el-image
           style="height: 200px"
-          :src="macOS(image.path)"
+          :src="macOS(image.info.thumb_path)"
           fit="scale-down"
         ></el-image>
         <div style="padding: 4px">
