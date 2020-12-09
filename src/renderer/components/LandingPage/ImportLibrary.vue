@@ -8,7 +8,6 @@
       class="waves-effect waves-light btn"
       >打开目录</el-button
     >
-    <el-button v-else type="danger" @click="clear_library">清空图库</el-button>
   </div>
 </template>
 <script>
@@ -17,11 +16,6 @@ import {
 } from 'electron'
 
 export default {
-  data() {
-    return {
-
-    }
-  },
   computed: {
     is_empty() {
       return this.$store.state.FileStatus.fTree.length === 0

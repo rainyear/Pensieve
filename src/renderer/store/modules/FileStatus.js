@@ -5,7 +5,8 @@ const state = {
   fTree: [],
   images: [],
   importing: false,
-  currentImages: []
+  currentImages: [],
+  groupView: true
 }
 
 const mutations = {
@@ -27,7 +28,11 @@ const mutations = {
   UPDATE_IMPORTING (state, flag) {
     state.importing = flag
   },
+  SET_IMAGEVIEW (state, flag) {
+    state.groupView = flag
+  },
   SELECT_FOLDER (state, folder) {
+    state.groupView = true
     state.currentImages = state.images.filter(img => Path.dirname(img.path) === folder)
   },
   CLEAR (state) {
